@@ -22,6 +22,7 @@
 #include "resource/policies/base/matcher.hpp"
 #include "resource/planner/c/planner.h"
 
+enum class traverser_match_kind_t { RESOURCE_MATCH, SLOT_MATCH, NONE_MATCH, PRISTINE_NONE_MATCH };
 namespace Flux {
 namespace resource_model {
 
@@ -78,6 +79,27 @@ class dfu_match_cb_t : public matcher_data_t, public matcher_util_api_t {
                                   const std::vector<Flux::Jobspec::Resource> &resources,
                                   const resource_graph_t &g);
 
+    /*/*!*/
+    /* *  Called back on each postorder visit of the dominant subsystem.*/
+    /* *  Must be overridden by a derived class if this visit event should*/
+    /* *  be programed.*/
+    /* *  Should return a score calculated based on the subtree and up walks*/
+    /* *  using the score API object (dfu). Any score above MATCH_MET*/
+    /* *  is qualified to be a match.*/
+    /* **/
+    /* *  \param u         descriptor of the visiting vertex*/
+    /* *  \param subsystem subsystem_t object of the dominant subsystem*/
+    /* *  \param resources vector of resources to be matched*/
+    /* *  \param g         filtered resource graph*/
+    /* *  \param dfu       score interface object -- See utilities/README.md*/
+    /* **/
+    /* *  \return          return 0 on success; otherwise -1*/
+    /* */
+    /*virtual int dom_finish_vtx (vtx_t u,*/
+    /*                            subsystem_t subsystem,*/
+    /*                            const std::vector<Flux::Jobspec::Resource> &resources,*/
+    /*                            const resource_graph_t &g,*/
+    /*                            scoring_api_t &dfu);*/
     /*!
      *  Called back on each postorder visit of the dominant subsystem.
      *  Must be overridden by a derived class if this visit event should
@@ -91,15 +113,17 @@ class dfu_match_cb_t : public matcher_data_t, public matcher_util_api_t {
      *  \param resources vector of resources to be matched
      *  \param g         filtered resource graph
      *  \param dfu       score interface object -- See utilities/README.md
+     *  \param sm        Type of match, whether this match is a slot or not
      *
      *  \return          return 0 on success; otherwise -1
      */
+
     virtual int dom_finish_vtx (vtx_t u,
                                 subsystem_t subsystem,
                                 const std::vector<Flux::Jobspec::Resource> &resources,
                                 const resource_graph_t &g,
-                                scoring_api_t &dfu);
-
+                                scoring_api_t &dfu,
+                                traverser_match_kind_t sm);
     /*! Called back on each pre-up visit of an auxiliary subsystem.
      *  Must be overridden by a derived class if this visit event should
      *  be programed.
