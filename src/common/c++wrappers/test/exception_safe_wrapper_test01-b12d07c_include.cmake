@@ -1,0 +1,5 @@
+if(EXISTS "/home/nkulshr/flux-sched/src/common/c++wrappers/test/exception_safe_wrapper_test01-b12d07c_tests.cmake")
+  include("/home/nkulshr/flux-sched/src/common/c++wrappers/test/exception_safe_wrapper_test01-b12d07c_tests.cmake")
+else()
+  add_test(exception_safe_wrapper_test01_NOT_BUILT-b12d07c exception_safe_wrapper_test01_NOT_BUILT-b12d07c)
+endif()

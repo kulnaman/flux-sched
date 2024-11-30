@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 set(VER_FILE ${CMAKE_SOURCE_DIR}/flux-sched.ver)
+set(CMAKE_BUILD_TYPE Debug)
+
 if(DEFINED FLUX_SCHED_VER)
   # do nothing, user said so
 elseif(DEFINED ENV{FLUX_SCHED_VERSION})
@@ -134,6 +136,10 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.66 REQUIRED COMPONENTS
   graph
   )
+IF (Boost_FOUND)
+  INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+  ADD_DEFINITIONS( "-DHAS_BOOST" )
+ENDIF()
 message(STATUS "Boost version: ${Boost_VERSION}")
 
 # Install paths
